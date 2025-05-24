@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,14 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Loader2 } from "lucide-react";
+import { User, Loader2, Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const { signIn, user } = useAuth();
   const navigate = useNavigate();
+  const [passToggle, setPassToggle] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -30,12 +30,12 @@ const Login = () => {
 
     try {
       const { data, error } = await signIn(formData.email, formData.password);
-      
+
       if (error) {
         toast({
           title: "Login failed",
           description: error.message,
-          variant: "destructive"
+          variant: "destructive",
         });
       } else {
         toast({
@@ -48,7 +48,7 @@ const Login = () => {
       toast({
         title: "Login failed",
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -56,9 +56,9 @@ const Login = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -75,9 +75,7 @@ const Login = () => {
 
         <Card className="border-0 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center text-gray-900">
-              Sign In
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold text-center text-gray-900">Sign In</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,19 +93,30 @@ const Login = () => {
                   disabled={loading}
                 />
               </div>
-              <div>
+              <div className="relative">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="mt-1"
-                  placeholder="Enter your password"
-                  disabled={loading}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={passToggle ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 pr-10"
+                    placeholder="Enter your password"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setPassToggle(!passToggle)}
+                    tabIndex={-1}
+                    disabled={loading}
+                  >
+                    {passToggle ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <Button type="submit" size="lg" className="w-full" disabled={loading}>
                 {loading ? (
