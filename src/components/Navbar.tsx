@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -15,7 +16,7 @@ export const Navbar = () => {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "How It Works", href: "/how-it-works" },
-    { name: "Pricing", href: "/pricing" }, // Add pricing link
+    { name: "Pricing", href: "/pricing" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -39,15 +40,19 @@ export const Navbar = () => {
 
   if (loading) {
     return (
-      <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-20">
             <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+              <Link to="/" className="flex items-center space-x-3 group">
+                <div className="relative">
+                  <img 
+                    src="/lovable-uploads/32e92af5-4414-4483-849c-f89a5b3edd5d.png" 
+                    alt="Contact Book" 
+                    className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
+                  />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ContactBook</span>
+                <span className="text-2xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#4678f3]">Contact Book</span>
               </Link>
             </div>
           </div>
@@ -57,15 +62,19 @@ export const Navbar = () => {
   }
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="relative">
+                <img 
+                  src="/lovable-uploads/32e92af5-4414-4483-849c-f89a5b3edd5d.png" 
+                  alt="Contact Book" 
+                  className="w-10 h-10 transition-transform duration-300 group-hover:scale-110"
+                />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ContactBook</span>
+              <span className="text-2xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#4678f3]">Contact Book</span>
             </Link>
           </div>
 
@@ -76,11 +85,15 @@ export const Navbar = () => {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200",
-                  isActive(item.href) && "text-blue-600 font-semibold"
+                  "relative text-gray-700 hover:text-[#4678f3] px-3 py-2 text-sm font-medium transition-all duration-300 group",
+                  isActive(item.href) && "text-[#4678f3] font-semibold"
                 )}
               >
                 {item.name}
+                <span className={cn(
+                  "absolute bottom-0 left-0 w-full h-0.5 bg-[#4678f3] transition-transform duration-300 origin-left",
+                  isActive(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
               </Link>
             ))}
           </div>
@@ -89,23 +102,23 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 transition-all duration-300">
                   <Link to="/dashboard">Dashboard</Link>
                 </Button>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 transition-all duration-300">
                   <Link to="/profile">Profile</Link>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <Button variant="outline" size="sm" onClick={handleSignOut} className="border-[#4678f3] text-[#4678f3] hover:bg-[#4678f3] hover:text-white transition-all duration-300">
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 transition-all duration-300">
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild>
+                <Button asChild className="bg-[#4678f3] hover:bg-[#4678f3]/90 text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                   <Link to="/signup">Sign Up</Link>
                 </Button>
               </>
@@ -114,7 +127,7 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)}>
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)} className="text-gray-700 hover:text-[#4678f3] transition-colors duration-300">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
           </div>
@@ -123,15 +136,15 @@ export const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
+        <div className="md:hidden bg-white border-t border-gray-100 shadow-lg animate-fade-in">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200",
-                  isActive(item.href) ? "text-blue-600 bg-blue-50" : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  "block px-3 py-3 text-base font-medium rounded-lg transition-all duration-300",
+                  isActive(item.href) ? "text-[#4678f3] bg-[#4678f3]/10" : "text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5"
                 )}
                 onClick={() => setIsOpen(false)}
               >
@@ -141,14 +154,14 @@ export const Navbar = () => {
             <div className="pt-4 pb-2 border-t border-gray-200">
               {user ? (
                 <>
-                  <Link to="/dashboard" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                  <Link to="/dashboard" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 rounded-lg transition-all duration-300" onClick={() => setIsOpen(false)}>
                     Dashboard
                   </Link>
-                  <Link to="/profile" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                  <Link to="/profile" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 rounded-lg transition-all duration-300" onClick={() => setIsOpen(false)}>
                     Profile
                   </Link>
                   <button
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
+                    className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 rounded-lg transition-all duration-300"
                     onClick={() => {
                       handleSignOut();
                       setIsOpen(false);
@@ -159,10 +172,10 @@ export const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
+                  <Link to="/login" className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-[#4678f3] hover:bg-[#4678f3]/5 rounded-lg transition-all duration-300" onClick={() => setIsOpen(false)}>
                     Login
                   </Link>
-                  <Link to="/signup" className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-700" onClick={() => setIsOpen(false)}>
+                  <Link to="/signup" className="block px-3 py-3 text-base font-medium text-[#4678f3] hover:text-[#4678f3]/80 hover:bg-[#4678f3]/5 rounded-lg transition-all duration-300" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
                 </>
