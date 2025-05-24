@@ -63,9 +63,9 @@ const Signup = () => {
       } else {
         toast({
           title: "Account created successfully!",
-          description: "Welcome to ContactBook. You can now start managing your contacts.",
+          description: "Your account has been created. Please login to start managing your contacts.",
         });
-        navigate("/dashboard");
+        navigate("/login");
       }
     } catch (error) {
       toast({
