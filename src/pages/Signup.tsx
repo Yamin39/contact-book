@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,17 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Loader2 } from "lucide-react";
+import { User, Loader2, Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const { signUp, user } = useAuth();
+  const [passToggle, setPassToggle] = useState(false);
+  const [confirmPassToggle, setConfirmPassToggle] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    agreeToTerms: false
+    agreeToTerms: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -30,12 +31,12 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast({
         title: "Password mismatch",
         description: "Passwords do not match. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -44,7 +45,7 @@ const Signup = () => {
       toast({
         title: "Terms required",
         description: "Please agree to the terms of service to continue.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -53,12 +54,12 @@ const Signup = () => {
 
     try {
       const { data, error } = await signUp(formData.email, formData.password, formData.name);
-      
+
       if (error) {
         toast({
           title: "Signup failed",
           description: error.message,
-          variant: "destructive"
+          variant: "destructive",
         });
       } else {
         toast({
@@ -71,7 +72,7 @@ const Signup = () => {
       toast({
         title: "Signup failed",
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -79,9 +80,9 @@ const Signup = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -98,9 +99,7 @@ const Signup = () => {
 
         <Card className="border-0 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center text-gray-900">
-              Sign Up
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold text-center text-gray-900">Sign Up</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -131,42 +130,62 @@ const Signup = () => {
                   disabled={loading}
                 />
               </div>
-              <div>
+              <div className="relative">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="mt-1"
-                  placeholder="Create a strong password"
-                  disabled={loading}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={passToggle ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 pr-10"
+                    placeholder="Create a strong password"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setPassToggle(!passToggle)}
+                    tabIndex={-1}
+                    disabled={loading}
+                  >
+                    {passToggle ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
-              <div>
+              <div className="relative">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  className="mt-1"
-                  placeholder="Confirm your password"
-                  disabled={loading}
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={confirmPassToggle ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 pr-10"
+                    placeholder="Confirm your password"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setConfirmPassToggle(!confirmPassToggle)}
+                    tabIndex={-1}
+                    disabled={loading}
+                  >
+                    {confirmPassToggle ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="agreeToTerms"
                   checked={formData.agreeToTerms}
-                  onCheckedChange={(checked) => 
-                    setFormData(prev => ({ ...prev, agreeToTerms: !!checked }))
-                  }
+                  onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, agreeToTerms: !!checked }))}
                   disabled={loading}
                 />
                 <Label htmlFor="agreeToTerms" className="text-sm text-gray-600">
