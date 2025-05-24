@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,16 @@ import { AddContactDialog } from "@/components/AddContactDialog";
 import { useContacts } from "@/hooks/useContacts";
 import { useAuth } from "@/contexts/AuthContext";
 import { Plus, Search, Users, Loader2, Filter, Grid, List } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -17,6 +26,8 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -42,10 +53,11 @@ const Dashboard = () => {
     return null;
   }
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (contact.phone && contact.phone.includes(searchTerm))
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (contact.phone && contact.phone.includes(searchTerm))
   );
 
   const handleAddContact = async (contactData: any) => {
@@ -60,9 +72,18 @@ const Dashboard = () => {
   };
 
   const handleDeleteContact = async (id: string) => {
-    const contact = contacts.find(c => c.id === id);
-    if (contact && window.confirm(`Are you sure you want to delete ${contact.name}?`)) {
-      await deleteContact(id);
+    const contact = contacts.find((c) => c.id === id);
+    if (contact) {
+      setContactToDelete(id);
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (contactToDelete) {
+      await deleteContact(contactToDelete);
+      setDeleteDialogOpen(false);
+      setContactToDelete(null);
     }
   };
 
@@ -89,14 +110,14 @@ const Dashboard = () => {
                 <span className="text-[#4678f3] relative">
                   Contacts
                   <svg className="absolute -bottom-1 left-0 w-full h-2" viewBox="0 0 200 8" fill="none">
-                    <path d="M2 6C50 3 100 1 198 6" stroke="#4678f3" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M2 6C50 3 100 1 198 6" stroke="#4678f3" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </span>
               </h1>
               <p className="text-gray-600 text-lg">Manage and organize your professional and personal connections</p>
             </div>
-            <div className="mt-6 md:mt-0 animate-fade-in" style={{animationDelay: '0.1s'}}>
-              <Button 
+            <div className="mt-6 md:mt-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <Button
                 onClick={() => setIsAddDialogOpen(true)}
                 size="lg"
                 className="bg-[#4678f3] hover:bg-[#4678f3]/90 text-white px-8 py-3 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -127,7 +148,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg md:col-span-2 animate-fade-in" style={{animationDelay: '0.1s'}}>
+            <Card className="border-0 shadow-lg md:col-span-2 animate-fade-in" style={{ animationDelay: "0.1s" }}>
               <CardContent className="p-6">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -141,7 +162,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <Card className="border-0 shadow-lg animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -182,17 +203,12 @@ const Dashboard = () => {
                 <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Users className="w-12 h-12 text-gray-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {searchTerm ? "No contacts found" : "No contacts yet"}
-                </h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{searchTerm ? "No contacts found" : "No contacts yet"}</h3>
                 <p className="text-gray-600 mb-8 text-lg">
-                  {searchTerm 
-                    ? "Try adjusting your search terms or add a new contact" 
-                    : "Get started by adding your first contact to build your network"
-                  }
+                  {searchTerm ? "Try adjusting your search terms or add a new contact" : "Get started by adding your first contact to build your network"}
                 </p>
                 {!searchTerm && (
-                  <Button 
+                  <Button
                     onClick={() => setIsAddDialogOpen(true)}
                     size="lg"
                     className="bg-[#4678f3] hover:bg-[#4678f3]/90 text-white px-8 py-3 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -204,18 +220,10 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className={`grid gap-6 ${
-              viewMode === "grid" 
-                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" 
-                : "grid-cols-1"
-            }`}>
+            <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
               {filteredContacts.map((contact, index) => (
-                <div key={contact.id} className="animate-fade-in" style={{animationDelay: `${index * 0.05}s`}}>
-                  <ContactCard
-                    contact={contact}
-                    onEdit={handleEditContact}
-                    onDelete={handleDeleteContact}
-                  />
+                <div key={contact.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <ContactCard contact={contact} onEdit={handleEditContact} onDelete={handleDeleteContact} />
                 </div>
               ))}
             </div>
@@ -223,11 +231,30 @@ const Dashboard = () => {
         </div>
       </section>
 
-      <AddContactDialog
-        open={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        onAddContact={handleAddContact}
-      />
+      <AddContactDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} onAddContact={handleAddContact} />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="border-0 shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold text-gray-900">Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 text-base mt-2">
+              Are you sure you want to delete {contacts.find((c) => c.id === contactToDelete)?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-6">
+            <AlertDialogCancel className="border-gray-300 text-gray-700 hover:text-gray-900 hover:border-gray-400 transition-all duration-300">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-[#4678f3] hover:bg-[#4678f3]/90 text-white transition-all duration-300 transform hover:scale-105"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

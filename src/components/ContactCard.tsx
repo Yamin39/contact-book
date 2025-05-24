@@ -36,7 +36,7 @@ export const ContactCard = ({ contact, onEdit, onDelete }: ContactCardProps) => 
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-[#4678f3] rounded-full flex items-center justify-center">
                 <User className="w-6 h-6 text-white" />
               </div>
               <div className="ml-3">
