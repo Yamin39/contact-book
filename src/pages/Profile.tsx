@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Loader2, LogOut } from "lucide-react";
+import { User, Loader2, LogOut, Settings, Shield, Edit3 } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -138,114 +138,159 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-[#4678f3] mx-auto mb-4" />
+          <p className="text-gray-600">Loading your profile...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-16">
-      <div className="max-w-2xl mx-auto px-4">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <section className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center animate-fade-in">
+            <div className="w-20 h-20 bg-[#4678f3] rounded-full flex items-center justify-center mx-auto mb-6">
+              <User className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Profile{" "}
+              <span className="text-[#4678f3] relative">
+                Settings
+                <svg className="absolute -bottom-1 left-0 w-full h-2" viewBox="0 0 200 8" fill="none">
+                  <path d="M2 6C50 3 100 1 198 6" stroke="#4678f3" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </span>
+            </h1>
+            <p className="text-gray-600 text-lg">Manage your account information and preferences</p>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Settings</h1>
-          <p className="text-gray-600">Manage your account information</p>
         </div>
+      </section>
 
-        <div className="grid gap-6">
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold text-gray-900">
-                Personal Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="full_name">Full Name</Label>
-                  <Input
-                    id="full_name"
-                    name="full_name"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                    className="mt-1"
-                    placeholder="Enter your full name"
+      {/* Content Section */}
+      <section className="py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8">
+            {/* Personal Information */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 animate-fade-in">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
+                  <Edit3 className="w-6 h-6 mr-3 text-[#4678f3]" />
+                  Personal Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="full_name" className="text-gray-700 font-medium text-lg">Full Name</Label>
+                      <Input
+                        id="full_name"
+                        name="full_name"
+                        value={formData.full_name}
+                        onChange={handleChange}
+                        className="mt-2 h-12 border-gray-200 focus:border-[#4678f3] focus:ring-[#4678f3] transition-all duration-300"
+                        placeholder="Enter your full name"
+                        disabled={updating}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email" className="text-gray-700 font-medium text-lg">Email</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        className="mt-2 h-12 border-gray-200 bg-gray-50 cursor-not-allowed"
+                        disabled={true}
+                        title="Email cannot be changed from this interface"
+                      />
+                      <p className="text-sm text-gray-500 mt-2">
+                        Email cannot be changed from this interface
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    type="submit" 
                     disabled={updating}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    className="mt-1"
-                    disabled={true}
-                    title="Email cannot be changed from this interface"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Email cannot be changed from this interface
-                  </p>
-                </div>
-                <Button type="submit" disabled={updating}>
-                  {updating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Profile"
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                    size="lg"
+                    className="bg-[#4678f3] hover:bg-[#4678f3]/90 text-white px-8 py-3 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    {updating ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Profile"
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
 
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold text-gray-900">
-                Account Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium text-gray-700">Account Created</Label>
-                <p className="text-gray-600">
-                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}
-                </p>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-gray-700">Last Updated</Label>
-                <p className="text-gray-600">
-                  {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'N/A'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            {/* Account Information */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 animate-fade-in" style={{animationDelay: '0.1s'}}>
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
+                  <Shield className="w-6 h-6 mr-3 text-[#4678f3]" />
+                  Account Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <Label className="text-lg font-medium text-gray-700">Account Created</Label>
+                    <p className="text-gray-600 text-lg mt-2">
+                      {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-lg font-medium text-gray-700">Last Updated</Label>
+                    <p className="text-gray-600 text-lg mt-2">
+                      {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold text-gray-900">
-                Account Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="destructive" 
-                onClick={handleSignOut}
-                className="w-full sm:w-auto"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
-            </CardContent>
-          </Card>
+            {/* Account Actions */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 animate-fade-in" style={{animationDelay: '0.2s'}}>
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
+                  <Settings className="w-6 h-6 mr-3 text-[#4678f3]" />
+                  Account Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleSignOut}
+                    size="lg"
+                    className="flex-1 sm:flex-none px-8 py-3 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <LogOut className="w-5 h-5 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

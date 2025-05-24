@@ -33,127 +33,148 @@ const HowItWorks = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            How{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              It Works
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Getting started with ContactBook is simple. Follow these four easy steps 
-            to transform how you manage your contacts.
-          </p>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-24">
+        <div className="absolute inset-0" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234678f3' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"}}></div>
+        
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-8">
+              How{" "}
+              <span className="text-[#4678f3] relative">
+                It Works
+                <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 300 12" fill="none">
+                  <path d="M2 10C50 5 150 0 298 10" stroke="#4678f3" strokeWidth="3" strokeLinecap="round"/>
+                </svg>
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Getting started with Contact Book is simple. Follow these four easy steps 
+              to transform how you manage your contacts.
+            </p>
+          </div>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {steps.map((step, index) => (
-            <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-8">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                      <step.icon className="w-6 h-6 text-white" />
+      {/* Steps Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {steps.map((step, index) => (
+              <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
+                <CardContent className="p-10">
+                  <div className="flex items-start space-x-6">
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 bg-[#4678f3] rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-3">
+                        <step.icon className="w-8 h-8 text-white" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center mb-4">
+                        <span className="w-8 h-8 bg-[#4678f3]/10 text-[#4678f3] rounded-full flex items-center justify-center text-sm font-bold mr-4">
+                          {index + 1}
+                        </span>
+                        <h3 className="text-2xl font-bold text-gray-900">
+                          {step.title}
+                        </h3>
+                      </div>
+                      <p className="text-gray-600 mb-4 font-medium text-lg">
+                        {step.description}
+                      </p>
+                      <p className="text-gray-500 leading-relaxed">
+                        {step.details}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                        {index + 1}
-                      </span>
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="text-gray-600 mb-3 font-medium">
-                      {step.description}
-                    </p>
-                    <p className="text-gray-500 text-sm leading-relaxed">
-                      {step.details}
-                    </p>
-                  </div>
-                </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 animate-fade-in">
+              <CardContent className="p-10">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Key Features</h2>
+                <ul className="space-y-4">
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Unlimited contact storage</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Real-time synchronization</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Advanced search and filtering</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Secure data encryption</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Mobile-responsive design</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-[#4678f3] rounded-full mr-4"></div>
+                    <span className="text-lg">Export and backup options</span>
+                  </li>
+                </ul>
               </CardContent>
             </Card>
-          ))}
+
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 animate-fade-in" style={{animationDelay: '0.1s'}}>
+              <CardContent className="p-10">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Security & Privacy</h2>
+                <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                  Your contacts are precious, and we treat them that way. Contact Book uses 
+                  enterprise-grade security measures to protect your data.
+                </p>
+                <ul className="space-y-4">
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
+                    <span className="text-lg">End-to-end encryption</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
+                    <span className="text-lg">GDPR compliant</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
+                    <span className="text-lg">Regular security audits</span>
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
+                    <span className="text-lg">No data selling, ever</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Key Features</h2>
-              <ul className="space-y-3">
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Unlimited contact storage
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Real-time synchronization
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Advanced search and filtering
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Secure data encryption
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Mobile-responsive design
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
-                  Export and backup options
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Security & Privacy</h2>
-              <p className="text-gray-600 mb-4">
-                Your contacts are precious, and we treat them that way. ContactBook uses 
-                enterprise-grade security measures to protect your data.
-              </p>
-              <ul className="space-y-3">
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
-                  End-to-end encryption
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
-                  GDPR compliant
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
-                  Regular security audits
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
-                  No data selling, ever
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+      {/* CTA Section */}
+      <section className="py-24 bg-[#4678f3] relative overflow-hidden">
+        <div className="absolute inset-0" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v20h20z'/%3E%3C/g%3E%3C/svg%3E\")"}}></div>
+        
+        <div className="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Get Started?</h2>
+          <p className="text-xl text-white/90 mb-10 leading-relaxed">
+            Join thousands of users who have simplified their contact management with Contact Book.
+          </p>
+          <Button size="lg" variant="secondary" asChild className="text-lg px-10 py-4 bg-white text-[#4678f3] hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl">
+            <Link to="/signup">Create Your Free Account</Link>
+          </Button>
         </div>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-600 to-purple-600">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h2>
-            <p className="text-blue-100 mb-6">
-              Join thousands of users who have simplified their contact management with ContactBook.
-            </p>
-            <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-3">
-              <Link to="/signup">Create Your Free Account</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      </section>
     </div>
   );
 };
