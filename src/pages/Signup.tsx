@@ -1,15 +1,18 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { User, Loader2 } from "lucide-react";
 
 const Signup = () => {
+  const { signUp, user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,8 +20,15 @@ const Signup = () => {
     confirmPassword: "",
     agreeToTerms: false
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate("/dashboard");
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -39,11 +49,33 @@ const Signup = () => {
       return;
     }
 
-    // This will be connected to Supabase authentication
-    toast({
-      title: "Signup functionality",
-      description: "Connect to Supabase to enable user registration.",
-    });
+    setLoading(true);
+
+    try {
+      const { data, error } = await signUp(formData.email, formData.password, formData.name);
+      
+      if (error) {
+        toast({
+          title: "Signup failed",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Account created successfully!",
+          description: "Welcome to ContactBook. You can now start managing your contacts.",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Signup failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +114,7 @@ const Signup = () => {
                   required
                   className="mt-1"
                   placeholder="Your full name"
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -95,6 +128,7 @@ const Signup = () => {
                   required
                   className="mt-1"
                   placeholder="your.email@example.com"
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -108,6 +142,7 @@ const Signup = () => {
                   required
                   className="mt-1"
                   placeholder="Create a strong password"
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -121,6 +156,7 @@ const Signup = () => {
                   required
                   className="mt-1"
                   placeholder="Confirm your password"
+                  disabled={loading}
                 />
               </div>
               
@@ -131,6 +167,7 @@ const Signup = () => {
                   onCheckedChange={(checked) => 
                     setFormData(prev => ({ ...prev, agreeToTerms: !!checked }))
                   }
+                  disabled={loading}
                 />
                 <Label htmlFor="agreeToTerms" className="text-sm text-gray-600">
                   I agree to the{" "}
@@ -144,8 +181,15 @@ const Signup = () => {
                 </Label>
               </div>
 
-              <Button type="submit" size="lg" className="w-full">
-                Create Account
+              <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </form>
 

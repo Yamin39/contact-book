@@ -1,26 +1,58 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { User, Loader2 } from "lucide-react";
 
 const Login = () => {
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate("/dashboard");
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // This will be connected to Supabase authentication
-    toast({
-      title: "Login functionality",
-      description: "Connect to Supabase to enable authentication.",
-    });
+    setLoading(true);
+
+    try {
+      const { data, error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully logged in.",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +92,7 @@ const Login = () => {
                   required
                   className="mt-1"
                   placeholder="your.email@example.com"
+                  disabled={loading}
                 />
               </div>
               <div>
@@ -73,10 +106,18 @@ const Login = () => {
                   required
                   className="mt-1"
                   placeholder="Enter your password"
+                  disabled={loading}
                 />
               </div>
-              <Button type="submit" size="lg" className="w-full">
-                Sign In
+              <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing In...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 
