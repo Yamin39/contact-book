@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ export const Navbar = () => {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "How It Works", href: "/how-it-works" },
+    { name: "Pricing", href: "/pricing" }, // Add pricing link
     { name: "Contact", href: "/contact" },
   ];
 
@@ -32,7 +32,7 @@ export const Navbar = () => {
       toast({
         title: "Error",
         description: "Failed to sign out. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -47,9 +47,7 @@ export const Navbar = () => {
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                   <User className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  ContactBook
-                </span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ContactBook</span>
               </Link>
             </div>
           </div>
@@ -67,9 +65,7 @@ export const Navbar = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ContactBook
-              </span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ContactBook</span>
             </Link>
           </div>
 
@@ -118,11 +114,7 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(!isOpen)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
           </div>
@@ -139,9 +131,7 @@ export const Navbar = () => {
                 to={item.href}
                 className={cn(
                   "block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200",
-                  isActive(item.href)
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  isActive(item.href) ? "text-blue-600 bg-blue-50" : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                 )}
                 onClick={() => setIsOpen(false)}
               >
@@ -151,21 +141,13 @@ export const Navbar = () => {
             <div className="pt-4 pb-2 border-t border-gray-200">
               {user ? (
                 <>
-                  <Link
-                    to="/dashboard"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link to="/dashboard" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                     Dashboard
                   </Link>
-                  <Link
-                    to="/profile"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link to="/profile" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                     Profile
                   </Link>
-                  <button 
+                  <button
                     className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
                     onClick={() => {
                       handleSignOut();
@@ -177,18 +159,10 @@ export const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/login"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link to="/login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600" onClick={() => setIsOpen(false)}>
                     Login
                   </Link>
-                  <Link
-                    to="/signup"
-                    className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-700"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link to="/signup" className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-700" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
                 </>
