@@ -1,79 +1,74 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
 import { ContactCard } from "@/components/ContactCard";
 import { AddContactDialog } from "@/components/AddContactDialog";
-import { Plus, Search, Users } from "lucide-react";
-
-// Mock contact data - this will be replaced with Supabase data
-const mockContacts = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    notes: "Met at tech conference. Interested in collaboration."
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    email: "sarah.j@company.com",
-    phone: "+1 (555) 987-6543",
-    notes: "Project manager at ABC Corp. Follow up next month."
-  },
-  {
-    id: "3",
-    name: "Mike Chen",
-    email: "mike.chen@startup.io",
-    phone: "+1 (555) 456-7890",
-    notes: "Startup founder. Potential investor contact."
-  }
-];
+import { useContacts } from "@/hooks/useContacts";
+import { useAuth } from "@/contexts/AuthContext";
+import { Plus, Search, Users, Loader2 } from "lucide-react";
 
 const Dashboard = () => {
-  const [contacts, setContacts] = useState(mockContacts);
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/login");
+    }
+  }, [user, authLoading, navigate]);
+
+  // Don't render anything while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
+
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.phone.includes(searchTerm)
+    (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (contact.phone && contact.phone.includes(searchTerm))
   );
 
-  const handleAddContact = (contactData: any) => {
-    const newContact = {
-      id: Date.now().toString(),
-      ...contactData
-    };
-    setContacts(prev => [newContact, ...prev]);
-    toast({
-      title: "Contact added",
-      description: `${contactData.name} has been added to your contacts.`,
-    });
+  const handleAddContact = async (contactData: any) => {
+    const result = await addContact(contactData);
+    if (result) {
+      setIsAddDialogOpen(false);
+    }
   };
 
-  const handleEditContact = (id: string, updatedData: any) => {
-    setContacts(prev => prev.map(contact => 
-      contact.id === id ? { ...contact, ...updatedData } : contact
-    ));
-    toast({
-      title: "Contact updated",
-      description: "Contact information has been updated successfully.",
-    });
+  const handleEditContact = async (id: string, updatedData: any) => {
+    await updateContact(id, updatedData);
   };
 
-  const handleDeleteContact = (id: string) => {
+  const handleDeleteContact = async (id: string) => {
     const contact = contacts.find(c => c.id === id);
-    setContacts(prev => prev.filter(contact => contact.id !== id));
-    toast({
-      title: "Contact deleted",
-      description: `${contact?.name} has been removed from your contacts.`,
-    });
+    if (contact && window.confirm(`Are you sure you want to delete ${contact.name}?`)) {
+      await deleteContact(id);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

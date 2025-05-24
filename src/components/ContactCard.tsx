@@ -8,9 +8,9 @@ import { Mail, Phone, User, Edit, Trash2 } from "lucide-react";
 interface Contact {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  notes?: string;
+  email: string | null;
+  phone: string | null;
+  notes?: string | null;
 }
 
 interface ContactCardProps {
@@ -27,9 +27,7 @@ export const ContactCard = ({ contact, onEdit, onDelete }: ContactCardProps) => 
   };
 
   const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete ${contact.name}?`)) {
-      onDelete(contact.id);
-    }
+    onDelete(contact.id);
   };
 
   return (
@@ -66,14 +64,18 @@ export const ContactCard = ({ contact, onEdit, onDelete }: ContactCardProps) => 
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center text-gray-600">
-              <Mail className="w-4 h-4 mr-3 flex-shrink-0" />
-              <span className="text-sm truncate">{contact.email}</span>
-            </div>
-            <div className="flex items-center text-gray-600">
-              <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
-              <span className="text-sm">{contact.phone}</span>
-            </div>
+            {contact.email && (
+              <div className="flex items-center text-gray-600">
+                <Mail className="w-4 h-4 mr-3 flex-shrink-0" />
+                <span className="text-sm truncate">{contact.email}</span>
+              </div>
+            )}
+            {contact.phone && (
+              <div className="flex items-center text-gray-600">
+                <Phone className="w-4 h-4 mr-3 flex-shrink-0" />
+                <span className="text-sm">{contact.phone}</span>
+              </div>
+            )}
             {contact.notes && (
               <div className="mt-3 pt-3 border-t border-gray-200">
                 <p className="text-sm text-gray-600 line-clamp-3">{contact.notes}</p>

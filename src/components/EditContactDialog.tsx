@@ -14,9 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 interface Contact {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  notes?: string;
+  email: string | null;
+  phone: string | null;
+  notes?: string | null;
 }
 
 interface EditContactDialogProps {
@@ -33,22 +33,37 @@ export const EditContactDialog = ({ open, onOpenChange, contact, onEditContact }
     phone: "",
     notes: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (contact) {
       setFormData({
         name: contact.name,
-        email: contact.email,
-        phone: contact.phone,
+        email: contact.email || "",
+        phone: contact.phone || "",
         notes: contact.notes || ""
       });
     }
   }, [contact]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onEditContact(formData);
-    onOpenChange(false);
+    setIsSubmitting(true);
+    
+    try {
+      // Convert empty strings to null for optional fields
+      const contactData = {
+        name: formData.name,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        notes: formData.notes || null
+      };
+      
+      await onEditContact(contactData);
+      onOpenChange(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -74,29 +89,30 @@ export const EditContactDialog = ({ open, onOpenChange, contact, onEditContact }
               onChange={handleChange}
               required
               placeholder="Enter full name"
+              disabled={isSubmitting}
             />
           </div>
           <div>
-            <Label htmlFor="edit-email">Email *</Label>
+            <Label htmlFor="edit-email">Email</Label>
             <Input
               id="edit-email"
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
-              required
               placeholder="Enter email address"
+              disabled={isSubmitting}
             />
           </div>
           <div>
-            <Label htmlFor="edit-phone">Phone *</Label>
+            <Label htmlFor="edit-phone">Phone</Label>
             <Input
               id="edit-phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              required
               placeholder="Enter phone number"
+              disabled={isSubmitting}
             />
           </div>
           <div>
@@ -108,13 +124,21 @@ export const EditContactDialog = ({ open, onOpenChange, contact, onEditContact }
               onChange={handleChange}
               placeholder="Add any additional notes..."
               className="min-h-[80px]"
+              disabled={isSubmitting}
             />
           </div>
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => onOpenChange(false)}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
         </form>
       </DialogContent>
